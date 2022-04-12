@@ -26,16 +26,20 @@ type
     IntValue: Integer;
     [MockaPiPhoneUa('066, 099, 068')]
     PhoneNumber: string;
-
   end;
 
   TMockApiGetMe = class
   public
-
     [MockaPiInt64(Integer.MaxValue, Int64.MaxValue)]
     id: Int64;
     [MockaPiBoolean]
     is_bot: Boolean;
+    [MockaPiStringFromFile('..\..\Resources\NameDatabases\NamesDatabases\first names\all.txt')]
+    first_name: string;
+    [MockaPiStringFromFile('..\..\Resources\NameDatabases\NamesDatabases\surnames\all.txt')]
+    last_name: string;
+    [MockaPiStringFromFile('..\..\Resources\NameDatabases\NamesDatabases\surnames\all.txt')]
+    username: string;
   end;
 
 procedure Test;
@@ -48,7 +52,7 @@ begin
   LMockApi := TMockaPi.Create;
   kk := TMockApiGetMe.Create;
   try
-    LMockApi.Populate<TTest>(LTest);
+    LMockApi.Populate<TMockApiGetMe>(kk);
   finally
     LMockApi.Free;
   end;

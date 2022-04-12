@@ -58,6 +58,15 @@ type
     function Generate: TValue; override;
   end;
 
+  MockaPiStringFromFileAttribute = class(MockaPiAttribute)
+  private
+    FPosition: Integer;
+    FFileName: string;
+  public
+    constructor Create(const AFileName: string; const APosition: Integer = -1);
+    function Generate: TValue; override;
+  end;
+
   MockaPiStringEngAttribute = class(MockaPiStringAttribute)
   private
     FLength: Integer;
@@ -87,6 +96,7 @@ type
 implementation
 
 uses
+  System.IOUtils,
   System.SysUtils;
 
 { MockaPiNumberAttribute<T> }
@@ -196,6 +206,35 @@ end;
 function MockaPiByteAttribute.Generate: TValue;
 begin
   Result := FMin + Random(FMax - FMin);
+end;
+
+{ MockaPiStringFromFileAttribute }
+
+constructor MockaPiStringFromFileAttribute.Create(const AFileName: string; const APosition: Integer = -1);
+begin
+  FPosition := APosition;
+  FFileName := AFileName;
+end;
+
+function MockaPiStringFromFileAttribute.Generate: TValue;
+var
+  LLines: TArray<string>;
+  LRandom: MockaPiIntegerAttribute;
+  LPosition: Integer;
+begin
+  LLines := TFile.ReadAllLines(FFileName);
+  if FPosition < 0 then
+  begin
+    LRandom := MockaPiIntegerAttribute.Create(0, Length(LLines) - 1);
+    try
+      LPosition := LRandom.Generate.AsInteger;
+    finally
+      LRandom.Free;
+    end;
+  end
+  else
+    LPosition := FPosition;
+  Result := LLines[LPosition];
 end;
 
 initialization

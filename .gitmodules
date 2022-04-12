@@ -1,0 +1,3 @@
+[submodule "Resources/NameDatabases"]
+	path = Resources/NameDatabases
+	url = https://github.com/smashew/NameDatabases.git
